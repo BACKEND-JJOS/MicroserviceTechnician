@@ -11,8 +11,8 @@ import reactor.core.publisher.Mono;
 public class CreateNewServiceUseCase {
 
     private final ServiceRepository serviceRepository;
+    private final TechnicianRepository technicianRepository;
 
-    private  final TechnicianRepository technicianRepository;
     public Mono<Service> create(Service service) {
         return technicianRepository.findById(service.getTechnicianId())
                 .flatMap(technician -> serviceRepository.save(service))
