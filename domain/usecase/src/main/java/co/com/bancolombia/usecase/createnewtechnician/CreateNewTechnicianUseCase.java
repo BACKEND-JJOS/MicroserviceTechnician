@@ -1,4 +1,4 @@
-package co.com.bancolombia.usecase.createnewservice;
+package co.com.bancolombia.usecase.createnewtechnician;
 
 import co.com.bancolombia.model.service.Service;
 import co.com.bancolombia.model.service.gateways.ServiceRepository;
@@ -8,12 +8,11 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class CreateNewServiceUseCase {
+public class CreateNewTechnicianUseCase {
 
-    private final ServiceRepository serviceRepository;
+    private final TechnicianRepository technicianRepository;
 
-    private  final TechnicianRepository technicianRepository;
-    public Mono<Service> create(Service service) {
-        return serviceRepository.save(service);
+    public Mono<Technician> create(Technician technician) {
+        return technicianRepository.save(technician);
     }
 }

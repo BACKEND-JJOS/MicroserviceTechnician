@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface ServiceRepository {
     Mono<Service> findById(Integer id);
+
+    Mono<Service> save(Service service);
 }

@@ -17,4 +17,9 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     public Mono<Service> findById(Integer id) {
         return daoService.findById(id);
     }
+
+    @Override
+    public Mono<Service> save(Service service) {
+        return daoService.save(service);
+    }
 }
