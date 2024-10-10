@@ -1,10 +1,57 @@
-# Proyecto Base Implementando Clean Architecture
+# MicroserviceTechnician
 
-## Antes de Iniciar
+## DescripciÃ³n
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+Este proyecto es un microservicio que maneja informaciÃ³n relacionada con tÃ©cnicos y servicios. Utiliza **Spring Boot** para el backend y una base de datos **PostgreSQL** para almacenar la informaciÃ³n.
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+## Prerrequisitos
+
+- **Java 17** o superior.
+- **Gradle** 
+- **Docker** y **Docker Compose** para ejecutar la base de datos en contenedores.
+- **IntelliJ IDEA** (u otro IDE compatible con proyectos de Java).
+
+## ConfiguraciÃ³n del Proyecto
+
+### 1. Clonar el repositorio
+
+Clona el repositorio desde GitHub y accede al directorio del proyecto:
+
+```bash
+https://github.com/BACKEND-JJOS/MicroserviceTechnician.git
+cd MicroserviceTechnician
+git checkout develop
+git pull origin develop
+```
+
+### 2. ConfiguraciÃ³n de la base de datos con Docker Compose
+
+Este proyecto utiliza una base de datos PostgreSQL que puedes configurar rÃ¡pidamente utilizando Docker. Para levantar la base de datos, simplemente ejecuta el siguiente comando:
+
+#### Nota: Recuerde tener actualizado docker
+
+```bash
+docker-compose up -d
+```
+
+Esto levantarÃ¡ un contenedor de PostgreSQL con las siguientes configuraciones predeterminadas:
+
+- Usuario: postgres
+- ContraseÃ±a: postgres
+- Puerto local: 5432
+
+El contenedor almacenarÃ¡ los datos de forma persistente en un volumen de Docker llamado postgres_data.
+
+### 3. Ejecutar el proyecto en IntelliJ
+
+1. Abre IntelliJ IDEA y selecciona File > Open para cargar el proyecto.
+2. AsegÃºrate de que todas las dependencias estÃ©n correctamente instaladas .
+3. Ejecuta la clase principal del proyecto MainApplication.
+
+Una vez ejecute el proyecto puede hacer uso de los endpoint, recuerde que si desea ver la documentaciÃ³n swagger puede entra a 
+
+    http://localhost:8020/api/doc/swagger-ui/webjars/swagger-ui/index.html
+
 
 # Arquitectura
 
@@ -12,11 +59,56 @@ Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/
 
 ## Domain
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+Es el mÃ³dulo mas interno de la arquitectura, pertenece a la capa del dominio y encapsula la lÃ³gica y reglas del negocio mediante modelos y entidades del dominio.
 
 ## Usecases
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+Este mÃ³dulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lÃ³gica de aplicaciï¿½n y reacciona a las invocaciones desde el mï¿½dulo de entry points, orquestando los flujos hacia el mï¿½dulo de entities.
+
+## Dependencias por Paquete
+
+
+| **Paquete**                    | **Dependencias**                                                                                                 |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------|
+| **`domain`**                    |                                                                                                                  |
+|                                 | `org.springframework.boot:spring-boot-starter`                                                                    |
+|                                 | `org.reactivecommons.utils:object-mapper:0.1.0`                                                                  |
+|                                 | `com.google.code.gson:gson:2.11.0`                                                                                |
+|                                 | `com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2`                                  |
+|                                 | `com.tngtech.archunit:archunit:1.3.0`                                                                            |
+|                                 | `com.fasterxml.jackson.core:jackson-databind`                                                                     |
+|                                 | **Proyectos locales**                                                                                            |
+|                                 | `:r2dbc-postgresql`                                                                                              |
+|                                 | `:mongo-repository`                                                                                               |
+|                                 | `:reactive-web`                                                                                                  |
+|                                 | `:model`                                                                                                         |
+|                                 | `:usecase`                                                                                                       |
+|                                 | **Runtime**                                                                                                      |
+|                                 | `org.springframework.boot:spring-boot-devtools`                                                                  |
+| **`infrastructure.driven-adapter`** |                                                                                                              |
+|                                 | `org.springframework:spring-context`                                                                             |
+|                                 | `org.springframework.boot:spring-boot-starter-data-r2dbc`                                                        |
+|                                 | `jakarta.persistence:jakarta.persistence-api` (pendiente de revisiÃ³n)                                             |
+|                                 | `org.postgresql:r2dbc-postgresql`                                                                                |
+|                                 | `org.reactivecommons.utils:object-mapper-api:0.1.0`                                                              |
+|                                 | `com.google.code.gson:gson:2.11.0`                                                                                |
+|                                 | `com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2`                                  |
+|                                 | **Proyectos locales**                                                                                            |
+|                                 | `:model`                                                                                                         |
+|                                 | **Test**                                                                                                         |
+|                                 | `org.reactivecommons.utils:object-mapper:0.1.0`                                                                  |
+| **`infrastructure.entry-points`**|                                                                                                                  |
+|                                 | `org.springframework.boot:spring-boot-starter-webflux`                                                           |
+|                                 | `org.springframework.boot:spring-boot-starter-actuator`                                                          |
+|                                 | `org.springframework.boot:spring-boot-starter-validation:3.3.4`                                                  |
+|                                 | `io.micrometer:micrometer-registry-prometheus`                                                                   |
+|                                 | `org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0`                                                       |
+|                                 | `com.google.code.gson:gson:2.11.0`                                                                                |
+|                                 | `com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2`                                  |
+|                                 | **Proyectos locales**                                                                                            |
+|                                 | `:usecase`                                                                                                       |
+|                                 | `:model`                                                                                                         |
+
 
 ## Infrastructure
 
@@ -24,9 +116,9 @@ Este módulo gradle perteneciente a la capa del dominio, implementa los casos de 
 
 En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+Estas utilidades no estï¿½n arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
+genÃ©ricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
+basadas en el patrï¿½n de diseï¿½o [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
 
 Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
 
@@ -38,10 +130,12 @@ interactuar.
 
 ### Entry Points
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+Los entry points representan los puntos de entrada de la aplicaciï¿½n o el inicio de los flujos de negocio.
 
 ## Application
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+Este mÃ³dulo es el mÃ¡s externo de la arquitectura, es el encargado de ensamblar los distintos mÃ³dulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automï¿½tica, inyectando en ï¿½stos instancias concretas de las dependencias declaradas. Ademï¿½s inicia la aplicaciï¿½n (es el Ãºnico mÃ³dulo del proyecto donde encontraremos la funciÃ³n public static void main(String[] args).
 
 **Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+
+
