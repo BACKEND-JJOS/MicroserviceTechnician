@@ -2,6 +2,7 @@ package co.com.bancolombia.api;
 
 import co.com.bancolombia.api.request.ServiceRequest;
 import co.com.bancolombia.api.request.TechnicianRequest;
+import co.com.bancolombia.api.response.ApiResponse;
 import co.com.bancolombia.api.validator.GenericValidator;
 import co.com.bancolombia.model.service.Service;
 import co.com.bancolombia.model.technician.Technician;
@@ -11,6 +12,7 @@ import co.com.bancolombia.usecase.getallpaginatedservices.GetAllPaginatedService
 import co.com.bancolombia.usecase.getservicebyid.GetServiceByIdUseCase;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -36,9 +38,8 @@ public class Handler {
                 .flatMap(GenericValidator::validate)
                 .map(technicianRequest -> mapper.fromJson(mapper.toJson(technicianRequest), Technician.class))
                 .flatMap(technician -> createNewTechnicianUseCase.create(technician)
-                        .flatMap(savedService -> ServerResponse.ok().bodyValue(savedService))
-                )
-                .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error saving technician: " + e.getMessage()));
+                        .flatMap(savedTechnician ->  buildResponse(savedTechnician, HttpStatus.CREATED.value(), "Response ok"))
+                );
     }
 
     public Mono<ServerResponse> listenGETAllService(ServerRequest serverRequest) {
@@ -46,14 +47,14 @@ public class Handler {
         int size = Integer.parseInt(serverRequest.queryParam("size").orElse("10"));
         return getAllPaginatedServicesUseCase.getAll(size,page)
                 .collectList()
-                .flatMap(services -> ServerResponse.ok().bodyValue(services))
+                .flatMap(services ->  buildResponse(services, HttpStatus.OK.value(), "Response ok"))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
     }
 
     public Mono<ServerResponse> listenGETServiceById(ServerRequest serverRequest) {
         return getServiceByIdUseCase.getService(Integer.valueOf(serverRequest.pathVariable("id")))
-                        .flatMap(services -> ServerResponse.ok().bodyValue(services))
-                        .switchIfEmpty(ServerResponse.notFound().build())
+                        .flatMap(service -> buildResponse(service, HttpStatus.OK.value(), "Response ok"))
+                        .switchIfEmpty(buildResponse(null, HttpStatus.NOT_FOUND.value(), "The service does not exist"))
                         .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
     }
 
@@ -62,7 +63,17 @@ public class Handler {
                 .flatMap(GenericValidator::validate)
                 .map(serviceRequest -> mapper.fromJson(mapper.toJson(serviceRequest), Service.class))
                 .flatMap(service -> createNewServiceUseCase.create(service)
-                        .flatMap(savedService -> ServerResponse.ok().bodyValue(savedService))
+                        .flatMap(savedService -> buildResponse(savedService, HttpStatus.CREATED.value(), "Response ok"))
                 );
     }
+
+    private <T> Mono<ServerResponse> buildResponse(T data, int status, String message) {
+        ApiResponse<T> response = ApiResponse.<T>builder()
+                .data(data)
+                .status(status)
+                .message(message)
+                .build();
+        return ServerResponse.status(status).bodyValue(response);
+    }
+
 }
