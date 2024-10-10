@@ -28,9 +28,9 @@ public class RouterRest {
                         handler::listenGETAllService,
                         OpenApiDoc::getAllServices
                 )
-                .GET("/service/{id}",handler::listenGETServiceById, OpenApiDoc::getAllServices)
-                .POST("/technician",handler::listenPOSTCreateTechnician, OpenApiDoc::getAllServices)
-                .POST("/service", handler::listenPOSTCreateNewService, OpenApiDoc::getAllServices)
+                .GET("/service/{id}",handler::listenGETServiceById, OpenApiDoc::getServiceById)
+                .POST("/technician",handler::listenPOSTCreateTechnician, OpenApiDoc::createTechnician)
+                .POST("/service", handler::listenPOSTCreateNewService, OpenApiDoc::createService)
                 .build();
     }
 }
