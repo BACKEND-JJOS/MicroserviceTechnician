@@ -5,11 +5,13 @@ import co.com.bancolombia.api.exceptions.ValidationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
 public class GenericValidator {
 
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();

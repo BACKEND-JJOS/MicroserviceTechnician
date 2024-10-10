@@ -10,17 +10,12 @@ import co.com.bancolombia.usecase.createnewtechnician.CreateNewTechnicianUseCase
 import co.com.bancolombia.usecase.getallpaginatedservices.GetAllPaginatedServicesUseCase;
 import co.com.bancolombia.usecase.getservicebyid.GetServiceByIdUseCase;
 import com.google.gson.Gson;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
