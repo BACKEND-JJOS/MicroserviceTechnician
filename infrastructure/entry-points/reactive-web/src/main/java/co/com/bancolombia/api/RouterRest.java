@@ -28,6 +28,13 @@ public class RouterRest {
                         handler::listenGETAllService,
                         OpenApiDoc::getAllServices
                 )
+                .GET("/service/filter-by-technician-and-range-date",
+                        RequestPredicates.queryParam("technicianId", technicianId -> true)
+                                .and(queryParam("startDate", startDate -> true))
+                                .and(queryParam("endDate", endDate -> true)),
+                        handler::listenGETServiceByDateRangeAndTechnicianId,
+                        OpenApiDoc::getAllServices
+                )
                 .GET("/service/{id}",handler::listenGETServiceById, OpenApiDoc::getServiceById)
                 .POST("/technician",handler::listenPOSTCreateTechnician, OpenApiDoc::createTechnician)
                 .POST("/service", handler::listenPOSTCreateNewService, OpenApiDoc::createService)

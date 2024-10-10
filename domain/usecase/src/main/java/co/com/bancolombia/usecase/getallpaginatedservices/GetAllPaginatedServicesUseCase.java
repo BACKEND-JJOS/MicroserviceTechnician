@@ -10,6 +10,7 @@ public class GetAllPaginatedServicesUseCase {
 
     private  final ServiceRepository serviceRepository;
     public Flux<Service> getAll(int size, int page){
-        return serviceRepository.findAllServicesPage(size,page);
+        return serviceRepository.findAllServicesPage(size,page)
+                .doOnNext(service -> System.out.println("size:"+ size + " page:" + page));
     }
 }

@@ -44,13 +44,17 @@ public class Handler {
                 );
     }
 
+    //TODO: Como validar cuando siz y page no sea un valor numerico ?
     public Mono<ServerResponse> listenGETAllService(ServerRequest serverRequest) {
-        int page = Integer.parseInt(serverRequest.queryParam("page").orElse("0"));
-        int size = Integer.parseInt(serverRequest.queryParam("size").orElse("10"));
-        return getAllPaginatedServicesUseCase.getAll(size,page)
-                .collectList()
-                .flatMap(services ->  buildResponse(services, HttpStatus.OK.value(), RESPONSE_OK))
-                .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
+        return Mono.just(serverRequest)
+                .flatMap(req -> Mono.zip(
+                        Mono.justOrEmpty(req.queryParam("size")).map(Integer::parseInt).defaultIfEmpty(0),
+                        Mono.justOrEmpty(req.queryParam("page")).map(Integer::parseInt).defaultIfEmpty(10)
+                ))
+                .flatMap(tuple -> getAllPaginatedServicesUseCase.getAll(tuple.getT1(), tuple.getT2())
+                        .collectList()
+                        .flatMap(services -> buildResponse(services, HttpStatus.OK.value(), RESPONSE_OK))
+                        .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage())));
     }
 
     public Mono<ServerResponse> listenGETServiceById(ServerRequest serverRequest) {
@@ -69,13 +73,28 @@ public class Handler {
                 );
     }
 
-    private <T> Mono<ServerResponse> buildResponse(T data, int status, String message) {
-        ApiResponse<T> response = ApiResponse.<T>builder()
-                .data(data)
-                .status(status)
-                .message(message)
-                .build();
-        return ServerResponse.status(status).bodyValue(response);
+    public Mono<ServerResponse> listenGETServiceByDateRangeAndTechnicianId(ServerRequest serverRequest) {
+
+        return Mono.just(serverRequest)
+                .flatMap(req -> Mono.zip(
+                        Mono.justOrEmpty(req.queryParam("technicianId")).map(Integer::parseInt).defaultIfEmpty(0),
+                        Mono.justOrEmpty(req.queryParam("page")).map(Integer::parseInt).defaultIfEmpty(0),
+                        Mono.justOrEmpty(req.queryParam("size")).map(Integer::parseInt).defaultIfEmpty(10)
+                ))
+                .flatMap(tuple -> getAllPaginatedServicesUseCase.getAll(tuple.getT1(), tuple.getT2())
+                        .collectList()
+                        .flatMap(services -> buildResponse(services, HttpStatus.OK.value(), RESPONSE_OK))
+                        .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()))
+                );
     }
 
+    private <T> Mono<ServerResponse> buildResponse(T data, int status, String message) {
+        return ServerResponse.status(status).bodyValue(
+                ApiResponse.<T>builder()
+                        .data(data)
+                        .status(status)
+                        .message(message)
+                        .build()
+        );
+    }
 }
