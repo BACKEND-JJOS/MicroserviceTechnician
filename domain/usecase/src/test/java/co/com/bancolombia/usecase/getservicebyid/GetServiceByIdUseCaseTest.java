@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GetServiceByIdUseCaseTest {
+class GetServiceByIdUseCaseTest {
 
     @Mock
     private ServiceRepository serviceRepository;

@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GetAllPaginatedServicesUseCaseTest {
+class GetAllPaginatedServicesUseCaseTest {
 
     @Mock
     private ServiceRepository serviceRepository;
