@@ -33,12 +33,14 @@ public class Handler {
 
     private  final Gson mapper;
 
+    private static final String RESPONSE_OK = "Response Ok";
+
     public Mono<ServerResponse> listenPOSTCreateTechnician(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(TechnicianRequest.class)
                 .flatMap(GenericValidator::validate)
                 .map(technicianRequest -> mapper.fromJson(mapper.toJson(technicianRequest), Technician.class))
                 .flatMap(technician -> createNewTechnicianUseCase.create(technician)
-                        .flatMap(savedTechnician ->  buildResponse(savedTechnician, HttpStatus.CREATED.value(), "Response ok"))
+                        .flatMap(savedTechnician ->  buildResponse(savedTechnician, HttpStatus.CREATED.value(), RESPONSE_OK))
                 );
     }
 
@@ -47,13 +49,13 @@ public class Handler {
         int size = Integer.parseInt(serverRequest.queryParam("size").orElse("10"));
         return getAllPaginatedServicesUseCase.getAll(size,page)
                 .collectList()
-                .flatMap(services ->  buildResponse(services, HttpStatus.OK.value(), "Response ok"))
+                .flatMap(services ->  buildResponse(services, HttpStatus.OK.value(), RESPONSE_OK))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
     }
 
     public Mono<ServerResponse> listenGETServiceById(ServerRequest serverRequest) {
         return getServiceByIdUseCase.getService(Integer.valueOf(serverRequest.pathVariable("id")))
-                        .flatMap(service -> buildResponse(service, HttpStatus.OK.value(), "Response ok"))
+                        .flatMap(service -> buildResponse(service, HttpStatus.OK.value(), RESPONSE_OK))
                         .switchIfEmpty(buildResponse(null, HttpStatus.NOT_FOUND.value(), "The service does not exist"))
                         .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
     }
@@ -63,7 +65,7 @@ public class Handler {
                 .flatMap(GenericValidator::validate)
                 .map(serviceRequest -> mapper.fromJson(mapper.toJson(serviceRequest), Service.class))
                 .flatMap(service -> createNewServiceUseCase.create(service)
-                        .flatMap(savedService -> buildResponse(savedService, HttpStatus.CREATED.value(), "Response ok"))
+                        .flatMap(savedService -> buildResponse(savedService, HttpStatus.CREATED.value(), RESPONSE_OK))
                 );
     }
 

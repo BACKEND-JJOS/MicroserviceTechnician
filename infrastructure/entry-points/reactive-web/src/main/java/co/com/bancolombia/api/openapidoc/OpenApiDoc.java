@@ -3,7 +3,6 @@ package co.com.bancolombia.api.openapidoc;
 import co.com.bancolombia.api.request.ServiceRequest;
 import co.com.bancolombia.api.request.TechnicianRequest;
 import co.com.bancolombia.api.response.ApiResponse;
-import co.com.bancolombia.model.service.Service;
 import lombok.experimental.UtilityClass;
 import org.springdoc.core.fn.builders.operation.Builder;
 import org.springframework.http.HttpStatus;
@@ -17,6 +16,8 @@ import static org.springdoc.core.fn.builders.schema.Builder.schemaBuilder;
 @UtilityClass
 public class OpenApiDoc {
     private static  final  String MEDIA_TYPE_APPLICATION_JSON = "application/json";
+
+    private static final String TAG_SERVICE = "Service";
 
     public Builder createService(Builder builder){
         return builder.operationId("createService")
@@ -41,7 +42,7 @@ public class OpenApiDoc {
                                                 .schema(schemaBuilder().implementation(ApiResponse.class))
                                 )
                 )
-                .tag("Service");
+                .tag(TAG_SERVICE);
     }
 
     public Builder getAllServices(Builder builder){
@@ -71,7 +72,7 @@ public class OpenApiDoc {
                                                 )
                                 )
                 )
-                .tag("Service");
+                .tag(TAG_SERVICE);
     }
 
     public Builder getServiceById(Builder builder) {
@@ -101,7 +102,7 @@ public class OpenApiDoc {
                                                 .schema(schemaBuilder().implementation(String.class))
                                 )
                 )
-                .tag("Service");
+                .tag(TAG_SERVICE);
     }
 
     public Builder createTechnician(Builder builder){
