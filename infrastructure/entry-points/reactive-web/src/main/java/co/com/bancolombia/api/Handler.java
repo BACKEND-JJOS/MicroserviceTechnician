@@ -42,14 +42,15 @@ public class Handler {
     }
 
     public Mono<ServerResponse> listenGETAllService(ServerRequest serverRequest) {
-        return getAllPaginatedServicesUseCase.getAll(0,0)
+        int page = Integer.parseInt(serverRequest.queryParam("page").orElse("0"));
+        int size = Integer.parseInt(serverRequest.queryParam("size").orElse("10"));
+        return getAllPaginatedServicesUseCase.getAll(size,page)
                 .collectList()
                 .flatMap(services -> ServerResponse.ok().bodyValue(services))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error searching services: " + e.getMessage()));
     }
 
     public Mono<ServerResponse> listenGETServiceById(ServerRequest serverRequest) {
-
         return getServiceByIdUseCase.getService(Integer.valueOf(serverRequest.pathVariable("id")))
                         .flatMap(services -> ServerResponse.ok().bodyValue(services))
                         .switchIfEmpty(ServerResponse.notFound().build())

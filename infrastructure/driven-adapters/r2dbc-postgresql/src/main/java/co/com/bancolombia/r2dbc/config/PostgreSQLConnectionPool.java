@@ -11,14 +11,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PostgreSQLConnectionPool {
-    // TODO: change pool connection properties based on your resources.
     public static final int INITIAL_SIZE = 12;
     public static final int MAX_SIZE = 15;
     public static final int MAX_IDLE_TIME = 30;
 
 	@Bean
 	public ConnectionPool getConnectionConfig() {
-        // TODO: change these properties for yours
 		PostgresqlConnectionProperties pgProperties = new PostgresqlConnectionProperties();
 		pgProperties.setDatabase("postgres");
 		pgProperties.setHost("localhost");
