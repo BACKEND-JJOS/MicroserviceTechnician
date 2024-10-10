@@ -1,7 +1,5 @@
 package co.com.bancolombia.usecase.createnewtechnician;
 
-import co.com.bancolombia.model.service.Service;
-import co.com.bancolombia.model.service.gateways.ServiceRepository;
 import co.com.bancolombia.model.technician.Technician;
 import co.com.bancolombia.model.technician.gateways.TechnicianRepository;
 import lombok.RequiredArgsConstructor;

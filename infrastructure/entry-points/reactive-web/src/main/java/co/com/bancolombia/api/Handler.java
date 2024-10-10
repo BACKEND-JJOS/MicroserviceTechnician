@@ -2,6 +2,7 @@ package co.com.bancolombia.api;
 
 import co.com.bancolombia.api.request.ServiceRequest;
 import co.com.bancolombia.api.request.TechnicianRequest;
+import co.com.bancolombia.api.validator.GenericValidator;
 import co.com.bancolombia.model.service.Service;
 import co.com.bancolombia.model.technician.Technician;
 import co.com.bancolombia.usecase.createnewservice.CreateNewServiceUseCase;
@@ -9,11 +10,17 @@ import co.com.bancolombia.usecase.createnewtechnician.CreateNewTechnicianUseCase
 import co.com.bancolombia.usecase.getallpaginatedservices.GetAllPaginatedServicesUseCase;
 import co.com.bancolombia.usecase.getservicebyid.GetServiceByIdUseCase;
 import com.google.gson.Gson;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -30,8 +37,8 @@ public class Handler {
     private  final Gson mapper;
 
     public Mono<ServerResponse> listenPOSTCreateTechnician(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(String.class)
-                .map(technician -> mapper.fromJson(technician, TechnicianRequest.class))
+        return serverRequest.bodyToMono(TechnicianRequest.class)
+                .flatMap(GenericValidator::validate)
                 .map(technicianRequest -> mapper.fromJson(mapper.toJson(technicianRequest), Technician.class))
                 .flatMap(technician -> createNewTechnicianUseCase.create(technician)
                         .flatMap(savedService -> ServerResponse.ok().bodyValue(savedService))
@@ -55,8 +62,8 @@ public class Handler {
     }
 
     public Mono<ServerResponse> listenPOSTCreateNewService(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(String.class)
-                .map(serviceJson -> mapper.fromJson(serviceJson, ServiceRequest.class))
+        return serverRequest.bodyToMono(ServiceRequest.class)
+                .flatMap(GenericValidator::validate)
                 .map(serviceRequest -> mapper.fromJson(mapper.toJson(serviceRequest), Service.class))
                 .flatMap(service -> createNewServiceUseCase.create(service)
                         .flatMap(savedService -> ServerResponse.ok().bodyValue(savedService))

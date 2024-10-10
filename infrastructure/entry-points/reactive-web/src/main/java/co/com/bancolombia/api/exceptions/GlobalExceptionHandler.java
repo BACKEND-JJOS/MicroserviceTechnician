@@ -34,13 +34,18 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
         Throwable error = getError(request);
         HttpStatus status;
 
-        if (error instanceof BusinessException) {
+        if (error instanceof BusinessException ) {
             status = HttpStatus.BAD_REQUEST;
-        } else {
+        } else if (error instanceof ValidationException) {
+            status = HttpStatus.BAD_REQUEST;
+        }else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        ErrorResponse errorResponse = new ErrorResponse(error.getMessage() != null ? error.getMessage() : BusinessException.DEFAULT_MESSAGE);
+        ErrorResponse errorResponse = new ErrorResponse(
+                error.getMessage() != null ? error.getMessage() : "An unexpected error occurred."
+        );
+
 
         return ServerResponse
                 .status(status)
