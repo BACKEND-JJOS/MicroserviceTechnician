@@ -60,7 +60,6 @@ public class Handler {
                 .map(serviceRequest -> mapper.fromJson(mapper.toJson(serviceRequest), Service.class))
                 .flatMap(service -> createNewServiceUseCase.create(service)
                         .flatMap(savedService -> ServerResponse.ok().bodyValue(savedService))
-                )
-                .onErrorResume(e -> ServerResponse.badRequest().bodyValue("Error saving service: " + e.getMessage()));
+                );
     }
 }

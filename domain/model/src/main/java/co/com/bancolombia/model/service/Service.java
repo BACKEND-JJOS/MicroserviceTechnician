@@ -16,5 +16,5 @@ public class Service {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Long technicianId;
+    private Integer technicianId;
 }
