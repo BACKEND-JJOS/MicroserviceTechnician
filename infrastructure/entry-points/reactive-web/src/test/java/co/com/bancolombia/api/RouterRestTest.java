@@ -9,6 +9,7 @@ import co.com.bancolombia.usecase.createnewservice.CreateNewServiceUseCase;
 import co.com.bancolombia.usecase.createnewtechnician.CreateNewTechnicianUseCase;
 import co.com.bancolombia.usecase.getallpaginatedservices.GetAllPaginatedServicesUseCase;
 import co.com.bancolombia.usecase.getservicebyid.GetServiceByIdUseCase;
+import co.com.bancolombia.usecase.getservicesbydaterangeandtechnicianid.GetServicesByDateRangeAndTechnicianIdUseCase;
 import config.TestConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -48,6 +48,8 @@ class RouterRestTest {
     @MockBean
     private CreateNewTechnicianUseCase createNewTechnicianUseCase;
 
+    @MockBean
+    private GetServicesByDateRangeAndTechnicianIdUseCase getServicesByDateRangeAndTechnicianIdUseCase;
     @Test
     void shouldListAllServices_shouldReturnOk_whenServicesExist() {
         Service mockService1 = Service.builder()

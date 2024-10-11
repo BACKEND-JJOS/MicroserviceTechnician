@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
 
 
 @Repository
@@ -21,4 +22,8 @@ public class ServiceReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         return repository.findAllBy(pageable).map(this::toEntity);
     }
 
+    public Flux<Service> findAllBy(int technicianId, LocalDateTime startDate, LocalDateTime endDate) {
+        return  repository.findAllByTechnicianIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(technicianId, startDate, endDate)
+                .map(this::toEntity);
+    }
 }
